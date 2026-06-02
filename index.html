@@ -10,7 +10,7 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    background: #f0f0f0;
+    background: #eaeee0;
     color: #222;
     font-family: 'Noto Sans KR', sans-serif;
     min-height: 100vh;
@@ -130,7 +130,7 @@
   .lb-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 72px; color: #333; }
   .lb-pct { font-size: .72rem; font-weight: 700; }
 
-  /* CANVAS WRAPPER (크기 버그 수정 핵심) */
+  /* 캔버스 화면 왜곡 방지 래퍼 */
   .canvas-wrapper {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
@@ -148,7 +148,7 @@
     gap: 4px; z-index: 25;
   }
   .dpad-btn {
-    background: rgba(255,255,255,0.75); border: 1.5px solid rgba(0,0,0,.1);
+    background: rgba(255,255,255,0.8); border: 1.5px solid rgba(0,0,0,.1);
     border-radius: 10px; color: #555; font-size: 1.1rem;
     cursor: pointer; display: flex; align-items: center; justify-content: center;
     user-select: none; -webkit-tap-highlight-color: transparent;
@@ -230,8 +230,8 @@ let players = {}, grid = [];
 let gameRunning = false;
 let selectedColor = PLAYER_COLORS[0];
 
-// canvas 변수명 일치 작업
-let canvas, ctx, particleCanvas, pCtx;
+// canvas
+let canvas, ctx, pCanvas, pCtx;
 let particles = [];
 let mouseAngle = 0;
 
@@ -240,10 +240,10 @@ document.addEventListener('DOMContentLoaded', () => {
   try { app = initializeApp(firebaseConfig); db = getDatabase(app); }
   catch(e) { alert('Firebase 오류: ' + e.message); return; }
 
-  canvas         = document.getElementById('gameCanvas');
-  ctx            = canvas.getContext('2d');
-  particleCanvas = document.getElementById('particleCanvas');
-  pCtx           = particleCanvas.getContext('2d');
+  canvas  = document.getElementById('gameCanvas');
+  ctx     = canvas.getContext('2d');
+  pCanvas = document.getElementById('particleCanvas');
+  pCtx    = pCanvas.getContext('2d');
 
   setupColorPicker();
   setupButtons();
@@ -440,7 +440,7 @@ function initGame(){
   off(ref(db,`rooms/${roomId}/players`));
   gameRunning=true; timeLeft=GAME_DURATION; particles=[];
 
-  resizeCanvas(); 
+  resizeCanvas();
 
   onValue(ref(db,`rooms/${roomId}/gameState`),snap=>{
     if(!snap.exists()) return;
@@ -569,7 +569,7 @@ function spawnExplosion(gx,gy,color){
 }
 function particleLoop(){
   if(!gameRunning) return;
-  pCtx.clearRect(0,0,particleCanvas.width,particleCanvas.height);
+  pCtx.clearRect(0,0,pCanvas.width,pCanvas.height);
   particles.forEach(p=>{
     p.x+=p.vx; p.y+=p.vy; p.vy+=0.18; p.vx*=0.94;
     p.life-=0.028; p.r*=0.97;
@@ -586,22 +586,22 @@ function particleLoop(){
 function resizeCanvas(){
   const size=Math.min(window.innerWidth,window.innerHeight);
   canvas.width=canvas.height=size;
-  particleCanvas.width=particleCanvas.height=size;
+  pCanvas.width=pCanvas.height=size;
 }
 window.addEventListener('resize',()=>{ if(gameRunning) resizeCanvas(); });
 
+// Null 방어코드가 내장된 안전한 색상 파싱 함수
 function hexToRgb(hex){
-  if (!hex) return [0, 0, 0];
-  if (typeof hex !== 'string') return [0, 0, 0];
+  if (!hex || typeof hex !== 'string') return [255, 255, 255];
   if (hex.charAt(0) !== '#') hex = '#' + hex;
   let r = parseInt(hex.slice(1,3), 16);
   let g = parseInt(hex.slice(3,5), 16);
   let b = parseInt(hex.slice(5,7), 16);
-  return [isNaN(r)?0:r, isNaN(g)?0:g, isNaN(b)?0:b];
+  return [isNaN(r)?255:r, isNaN(g)?255:g, isNaN(b)?255:b];
 }
 
 function renderGame(){
-  if(!ctx || !grid || grid.length === 0) return; 
+  if(!ctx || !grid || grid.length === 0) return;
   const W=canvas.width, cs=W/GRID;
 
   ctx.fillStyle='#ffffff';
