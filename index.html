@@ -1,0 +1,1003 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paper.io Multiplayer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;700&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --panel: #12121a;
+    --border: #2a2a3a;
+    --accent: #00ffcc;
+    --danger: #ff3366;
+    --text: #e8e8f0;
+    --muted: #5a5a7a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Noto Sans KR', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* ── SCREENS ── */
+  .screen { display: none; width: 100%; max-width: 480px; padding: 24px; }
+  .screen.active { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+  /* TITLE */
+  #screen-title { gap: 24px; }
+  .logo {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 3rem;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, var(--accent), #00aaff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: none;
+    animation: pulse 3s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
+
+  .subtitle { color: var(--muted); font-size: .85rem; letter-spacing: 2px; text-transform: uppercase; }
+
+  .input-group { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  label { font-size: .75rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  input[type=text] {
+    width: 100%;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: var(--text);
+    font-size: 1rem;
+    font-family: inherit;
+    outline: none;
+    transition: border-color .2s;
+  }
+  input[type=text]:focus { border-color: var(--accent); }
+
+  .color-picker { display: flex; gap: 10px; flex-wrap: wrap; }
+  .color-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: transform .15s, border-color .15s;
+  }
+  .color-btn.selected { border-color: white; transform: scale(1.2); }
+
+  .btn {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-family: 'Black Han Sans', sans-serif;
+    cursor: pointer;
+    letter-spacing: 1px;
+    transition: transform .1s, opacity .1s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-secondary { background: var(--panel); color: var(--text); border: 1px solid var(--border); }
+  .btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* LOBBY */
+  #screen-lobby { gap: 16px; }
+  .room-code-display {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    width: 100%;
+    text-align: center;
+  }
+  .room-code-display .label { font-size: .7rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
+  .room-code-display .code {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.5rem;
+    letter-spacing: 8px;
+    color: var(--accent);
+  }
+
+  .player-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
+  .player-item {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    animation: slideIn .2s ease;
+  }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
+  .player-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+  .player-name { flex: 1; font-size: .95rem; }
+  .player-badge { font-size: .65rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; }
+
+  .status-msg { font-size: .8rem; color: var(--muted); text-align: center; }
+
+  /* GAME */
+  #screen-game {
+    display: none;
+    width: 100vw; max-width: 100vw;
+    height: 100vh;
+    padding: 0;
+    position: relative;
+    flex-direction: column;
+  }
+  #screen-game.active { display: flex; }
+
+  #hud {
+    position: absolute; top: 0; left: 0; right: 0;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    background: rgba(10,10,15,.7);
+    backdrop-filter: blur(6px);
+    z-index: 10;
+    pointer-events: none;
+  }
+  #hud-name { font-family: 'Black Han Sans', sans-serif; font-size: 1rem; }
+  #hud-score { font-size: .85rem; color: var(--accent); }
+  #hud-time { font-size: .85rem; color: var(--muted); }
+
+  #leaderboard {
+    position: absolute; top: 52px; right: 12px;
+    background: rgba(18,18,26,.85);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    min-width: 140px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  #leaderboard h4 { font-size: .65rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
+  .lb-item { display: flex; align-items: center; gap: 8px; font-size: .8rem; margin-bottom: 4px; }
+  .lb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .lb-pct { margin-left: auto; color: var(--accent); font-size: .75rem; }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 100%;
+    touch-action: none;
+  }
+
+  /* D-PAD */
+  #dpad {
+    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    display: grid;
+    grid-template-columns: 56px 56px 56px;
+    grid-template-rows: 56px 56px 56px;
+    gap: 4px;
+    z-index: 10;
+  }
+  .dpad-btn {
+    background: rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,.15);
+    border-radius: 10px;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background .1s;
+  }
+  .dpad-btn:active, .dpad-btn.pressed { background: rgba(0,255,204,.25); border-color: var(--accent); }
+  .dpad-empty { background: none; border: none; pointer-events: none; }
+
+  /* GAME OVER */
+  #screen-gameover { gap: 20px; }
+  .result-title {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 2.2rem;
+    text-align: center;
+  }
+  .result-title.win { color: var(--accent); }
+  .result-title.lose { color: var(--danger); }
+  .result-stats { width: 100%; }
+  .stat-row {
+    display: flex; justify-content: space-between;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: .9rem;
+  }
+  .stat-row span:last-child { color: var(--accent); font-weight: 700; }
+
+  /* CONFIG warning */
+  #config-warning {
+    background: #2a1a00;
+    border: 1px solid #ff9900;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: .8rem;
+    line-height: 1.6;
+    color: #ffcc66;
+    display: none;
+    width: 100%;
+  }
+  #config-warning.show { display: block; }
+  #config-warning code { background: rgba(0,0,0,.3); padding: 1px 5px; border-radius: 3px; font-size: .75rem; }
+
+  /* Toast */
+  #toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.85);
+    color: var(--text);
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: .85rem;
+    z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .3s;
+  }
+  #toast.show { opacity: 1; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ FIREBASE CONFIG ══════════════ -->
+<!-- ⚠️  아래 firebaseConfig를 본인 Firebase 프로젝트 설정으로 교체하세요! -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, onDisconnect, push, update, remove, off }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDJYWUGB3-onRqeuRORgqup9253DM4dVW4",
+  authDomain: "mypaperio-9a975.firebaseapp.com",
+  databaseURL: "https://mypaperio-9a975-default-rtdb.firebaseio.com",
+  projectId: "mypaperio-9a975",
+  storageBucket: "mypaperio-9a975.firebasestorage.app",
+  messagingSenderId: "40231877042",
+  appId: "1:40231877042:web:7ce90a3093a180a0ed0cab",
+  measurementId: "G-YY2K417F5M"
+};
+
+// ─────────────────────────────────────────────
+//  CONSTANTS
+// ─────────────────────────────────────────────
+const GRID = 80;          // 맵 그리드 크기
+const CELL = 9;           // 픽셀 per cell (캔버스 크기에 따라 자동 조정)
+const GAME_DURATION = 120; // 게임 시간(초)
+const COLORS = ['#ff3366','#00ffcc','#ffcc00','#aa66ff','#ff6600','#00aaff'];
+const COLOR_NAMES = ['레드','그린','옐로우','퍼플','오렌지','블루'];
+const DIRS = { UP:[0,-1], DOWN:[0,1], LEFT:[-1,0], RIGHT:[1,0] };
+
+// ─────────────────────────────────────────────
+//  STATE
+// ─────────────────────────────────────────────
+let app, db;
+let myId = null, roomId = null;
+let isHost = false;
+let gameLoopInterval = null, timerInterval = null;
+let timeLeft = GAME_DURATION;
+
+let myDir = 'RIGHT', pendingDir = null;
+let players = {};      // { id: { name, color, x, y, trail, territory, alive, score } }
+let grid = [];         // GRID×GRID 배색 배열 (null or colorHex)
+let gameRunning = false;
+
+// Canvas
+let canvas, ctx, cellSize;
+
+// DOM refs
+const screens = {};
+let configWarning;
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  // Check config
+  configWarning = document.getElementById('config-warning');
+  if (firebaseConfig.apiKey === 'YOUR_API_KEY') {
+    configWarning.classList.add('show');
+  }
+
+  try {
+    app = initializeApp(firebaseConfig);
+    db = getDatabase(app);
+  } catch(e) {
+    configWarning.classList.add('show');
+    return;
+  }
+
+  ['title','lobby','game','gameover'].forEach(id => {
+    screens[id] = document.getElementById('screen-' + id);
+  });
+
+  canvas = document.getElementById('gameCanvas');
+  ctx = canvas.getContext('2d');
+
+  setupColorPicker();
+  setupButtons();
+  setupInput();
+  showScreen('title');
+});
+
+// ─────────────────────────────────────────────
+//  UI HELPERS
+// ─────────────────────────────────────────────
+function showScreen(name) {
+  Object.values(screens).forEach(s => s.classList.remove('active'));
+  screens[name].classList.add('active');
+  if (name === 'game') resizeCanvas();
+}
+
+function toast(msg, dur=2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ─────────────────────────────────────────────
+//  COLOR PICKER
+// ─────────────────────────────────────────────
+let selectedColor = COLORS[0];
+function setupColorPicker() {
+  const picker = document.getElementById('colorPicker');
+  COLORS.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'color-btn' + (i === 0 ? ' selected' : '');
+    btn.style.background = c;
+    btn.title = COLOR_NAMES[i];
+    btn.onclick = () => {
+      document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedColor = c;
+    };
+    picker.appendChild(btn);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  BUTTON SETUP
+// ─────────────────────────────────────────────
+function setupButtons() {
+  document.getElementById('btnCreate').onclick = createRoom;
+  document.getElementById('btnJoin').onclick = joinRoom;
+  document.getElementById('btnStart').onclick = startGame;
+  document.getElementById('btnLeave').onclick = leaveRoom;
+  document.getElementById('btnReplay').onclick = () => { leaveRoom(); showScreen('title'); };
+  document.getElementById('btnHome').onclick = () => { leaveRoom(); showScreen('title'); };
+
+  // D-pad
+  const dpad = { UP:'btnUp', DOWN:'btnDown', LEFT:'btnLeft', RIGHT:'btnRight' };
+  Object.entries(dpad).forEach(([dir, id]) => {
+    const btn = document.getElementById(id);
+    ['touchstart','mousedown'].forEach(ev => {
+      btn.addEventListener(ev, e => {
+        e.preventDefault();
+        setDir(dir);
+        btn.classList.add('pressed');
+      });
+    });
+    ['touchend','mouseup','mouseleave'].forEach(ev => {
+      btn.addEventListener(ev, () => btn.classList.remove('pressed'));
+    });
+  });
+}
+
+// ─────────────────────────────────────────────
+//  KEYBOARD
+// ─────────────────────────────────────────────
+function setupInput() {
+  document.addEventListener('keydown', e => {
+    if (!gameRunning) return;
+    const map = { ArrowUp:'UP', ArrowDown:'DOWN', ArrowLeft:'LEFT', ArrowRight:'RIGHT',
+                  w:'UP', s:'DOWN', a:'LEFT', d:'RIGHT',
+                  W:'UP', S:'DOWN', A:'LEFT', D:'RIGHT' };
+    if (map[e.key]) { e.preventDefault(); setDir(map[e.key]); }
+  });
+}
+
+function setDir(dir) {
+  const opposites = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
+  if (opposites[dir] !== myDir) pendingDir = dir;
+}
+
+// ─────────────────────────────────────────────
+//  ROOM MANAGEMENT
+// ─────────────────────────────────────────────
+function genRoomId() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+async function createRoom() {
+  const name = document.getElementById('playerName').value.trim() || '익명';
+  roomId = genRoomId();
+  isHost = true;
+  myId = 'p_' + Date.now();
+
+  const roomRef = ref(db, `rooms/${roomId}`);
+  await set(roomRef, {
+    status: 'waiting',
+    host: myId,
+    created: Date.now()
+  });
+
+  await joinAsPlayer(name);
+  showLobby();
+}
+
+async function joinRoom() {
+  const name = document.getElementById('playerName').value.trim() || '익명';
+  const code = document.getElementById('roomCode').value.trim().toUpperCase();
+  if (code.length !== 4) { toast('방 코드 4자리를 입력하세요'); return; }
+
+  const roomSnap = await get(ref(db, `rooms/${code}`));
+  if (!roomSnap.exists()) { toast('방을 찾을 수 없어요'); return; }
+  if (roomSnap.val().status !== 'waiting') { toast('이미 게임 중인 방이에요'); return; }
+
+  const playersSnap = await get(ref(db, `rooms/${code}/players`));
+  const existing = playersSnap.exists() ? Object.keys(playersSnap.val()) : [];
+  if (existing.length >= 6) { toast('방이 가득 찼어요 (최대 6명)'); return; }
+
+  roomId = code;
+  isHost = false;
+  myId = 'p_' + Date.now();
+
+  await joinAsPlayer(name);
+  showLobby();
+}
+
+async function joinAsPlayer(name) {
+  // Pick a color not used
+  const snap = await get(ref(db, `rooms/${roomId}/players`));
+  const usedColors = snap.exists() ? Object.values(snap.val()).map(p => p.color) : [];
+  const color = selectedColor && !usedColors.includes(selectedColor)
+    ? selectedColor
+    : COLORS.find(c => !usedColors.includes(c)) || COLORS[0];
+
+  const playerRef = ref(db, `rooms/${roomId}/players/${myId}`);
+  await set(playerRef, { name, color, alive: true, score: 0, ready: false });
+
+  // Clean up on disconnect
+  onDisconnect(playerRef).remove();
+  onDisconnect(ref(db, `rooms/${roomId}/host`)).set(null); // optional
+}
+
+function showLobby() {
+  document.getElementById('displayRoomCode').textContent = roomId;
+  const startBtn = document.getElementById('btnStart');
+  startBtn.style.display = isHost ? 'block' : 'none';
+  showScreen('lobby');
+
+  // Watch players
+  onValue(ref(db, `rooms/${roomId}/players`), snap => {
+    const data = snap.val() || {};
+    renderPlayerList(data);
+  });
+
+  // Watch game start
+  onValue(ref(db, `rooms/${roomId}/status`), snap => {
+    if (snap.val() === 'playing') {
+      initGame();
+    }
+  });
+}
+
+function renderPlayerList(data) {
+  const list = document.getElementById('playerList');
+  list.innerHTML = '';
+  const roomSnap = db; // just use data
+  Object.entries(data).forEach(([id, p]) => {
+    const div = document.createElement('div');
+    div.className = 'player-item';
+    div.innerHTML = `
+      <div class="player-dot" style="background:${p.color}"></div>
+      <span class="player-name">${p.name}</span>
+      ${id === myId ? '<span class="player-badge">나</span>' : ''}
+    `;
+    list.appendChild(div);
+  });
+  const count = Object.keys(data).length;
+  document.getElementById('lobbyStatus').textContent =
+    `${count}명 입장 중 · ${isHost ? '게임 시작 버튼을 누르세요' : '호스트가 시작할 때까지 대기'}`;
+}
+
+async function startGame() {
+  if (!isHost) return;
+  const snap = await get(ref(db, `rooms/${roomId}/players`));
+  if (!snap.exists() || Object.keys(snap.val()).length < 1) {
+    toast('최소 1명 필요해요');
+    return;
+  }
+  // Build initial game state
+  const pData = snap.val();
+  const pIds = Object.keys(pData);
+  const startPositions = generateStartPositions(pIds.length);
+
+  // Init grid (all null)
+  const flatGrid = new Array(GRID * GRID).fill(null);
+
+  // Place players
+  const gameState = { grid: flatGrid, players: {}, tick: 0 };
+  pIds.forEach((id, i) => {
+    const [sx, sy] = startPositions[i];
+    const p = pData[id];
+    // Mark initial territory (3×3)
+    for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
+      const nx = sx+dx, ny = sy+dy;
+      if (nx>=0&&nx<GRID&&ny>=0&&ny<GRID) flatGrid[ny*GRID+nx] = p.color;
+    }
+    gameState.players[id] = {
+      name: p.name, color: p.color,
+      x: sx, y: sy,
+      dir: 'RIGHT',
+      trail: [],
+      alive: true,
+      score: 9
+    };
+  });
+
+  await set(ref(db, `rooms/${roomId}/gameState`), gameState);
+  await update(ref(db, `rooms/${roomId}`), { status: 'playing', startTime: Date.now() });
+}
+
+function generateStartPositions(n) {
+  const margin = 10;
+  const positions = [
+    [margin, margin],
+    [GRID-margin, GRID-margin],
+    [GRID-margin, margin],
+    [margin, GRID-margin],
+    [GRID/2, margin],
+    [GRID/2, GRID-margin],
+  ];
+  return positions.slice(0, n);
+}
+
+// ─────────────────────────────────────────────
+//  GAME INIT
+// ─────────────────────────────────────────────
+function initGame() {
+  off(ref(db, `rooms/${roomId}/players`));
+  off(ref(db, `rooms/${roomId}/status`));
+  showScreen('game');
+  timeLeft = GAME_DURATION;
+  gameRunning = true;
+  pendingDir = null;
+
+  // Watch game state
+  onValue(ref(db, `rooms/${roomId}/gameState`), snap => {
+    if (!snap.exists()) return;
+    const gs = snap.val();
+    grid = gs.grid;
+    players = gs.players || {};
+    render();
+    updateHUD();
+    updateLeaderboard();
+
+    // Check if I'm dead
+    if (players[myId] && !players[myId].alive && gameRunning) {
+      // still spectate
+    }
+    // Check game end
+    const alive = Object.values(players).filter(p => p.alive);
+    if (alive.length <= 1 && Object.keys(players).length > 1) {
+      endGame();
+    }
+  });
+
+  // Host drives the game tick
+  if (isHost) {
+    gameLoopInterval = setInterval(gameTick, 150);
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      if (timeLeft <= 0) endGame();
+    }, 1000);
+  }
+
+  // Timer display (all clients)
+  if (!isHost) {
+    timerInterval = setInterval(() => {
+      timeLeft--;
+      document.getElementById('hud-time').textContent = formatTime(timeLeft);
+    }, 1000);
+    // Sync timer from server start time
+    get(ref(db, `rooms/${roomId}/startTime`)).then(snap => {
+      if (snap.exists()) {
+        const elapsed = Math.floor((Date.now() - snap.val()) / 1000);
+        timeLeft = Math.max(0, GAME_DURATION - elapsed);
+      }
+    });
+  }
+}
+
+// ─────────────────────────────────────────────
+//  GAME TICK (HOST ONLY)
+// ─────────────────────────────────────────────
+async function gameTick() {
+  if (!gameRunning) return;
+
+  // Read latest inputs
+  const inputsSnap = await get(ref(db, `rooms/${roomId}/inputs`));
+  const inputs = inputsSnap.exists() ? inputsSnap.val() : {};
+
+  const gsSnap = await get(ref(db, `rooms/${roomId}/gameState`));
+  if (!gsSnap.exists()) return;
+  const gs = gsSnap.val();
+  const localPlayers = gs.players || {};
+  const localGrid = gs.grid;
+
+  // Apply directions
+  Object.entries(inputs).forEach(([pid, inp]) => {
+    if (localPlayers[pid] && localPlayers[pid].alive) {
+      const opposites = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
+      if (inp.dir && opposites[inp.dir] !== localPlayers[pid].dir)
+        localPlayers[pid].dir = inp.dir;
+    }
+  });
+
+  // Move each player
+  const newPositions = {};
+  Object.entries(localPlayers).forEach(([pid, p]) => {
+    if (!p.alive) return;
+    const [dx, dy] = DIRS[p.dir] || [1, 0];
+    const nx = p.x + dx, ny = p.y + dy;
+
+    // Wall collision
+    if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) {
+      localPlayers[pid].alive = false; return;
+    }
+
+    // Self-trail collision
+    if (p.trail && p.trail.some(t => t[0]===nx && t[1]===ny)) {
+      localPlayers[pid].alive = false; return;
+    }
+
+    newPositions[pid] = [nx, ny];
+  });
+
+  // Cross-player trail collision
+  Object.entries(newPositions).forEach(([pid, [nx, ny]]) => {
+    Object.entries(localPlayers).forEach(([oid, op]) => {
+      if (oid === pid || !op.alive) return;
+      if (op.trail && op.trail.some(t => t[0]===nx && t[1]===ny)) {
+        localPlayers[pid].alive = false;
+      }
+    });
+  });
+
+  // Apply moves
+  Object.entries(newPositions).forEach(([pid, [nx, ny]]) => {
+    if (!localPlayers[pid].alive) return;
+    const p = localPlayers[pid];
+    const inTerritory = localGrid[ny*GRID+nx] === p.color;
+
+    if (inTerritory && p.trail && p.trail.length > 0) {
+      // Fill territory
+      fillTerritory(localGrid, p, localPlayers);
+      p.trail = [];
+    } else if (!inTerritory) {
+      p.trail = p.trail || [];
+      p.trail.push([p.x, p.y]);
+      localGrid[(p.y)*GRID+(p.x)] = null; // trail cell (will be colored on fill)
+    }
+
+    p.x = nx; p.y = ny;
+  });
+
+  // Count scores
+  Object.keys(localPlayers).forEach(pid => {
+    const color = localPlayers[pid].color;
+    localPlayers[pid].score = localGrid.filter(c => c === color).length;
+  });
+
+  // Write back
+  await update(ref(db, `rooms/${roomId}/gameState`), {
+    grid: localGrid,
+    players: localPlayers,
+    tick: (gs.tick || 0) + 1
+  });
+}
+
+function fillTerritory(localGrid, p, localPlayers) {
+  // Simple flood-fill approach: find enclosed area
+  const trail = p.trail || [];
+  if (trail.length === 0) return;
+
+  // Mark trail cells with player color temporarily
+  trail.forEach(([tx, ty]) => { localGrid[ty*GRID+tx] = p.color; });
+
+  // Flood fill from all border cells to find 'outside'
+  const outside = new Uint8Array(GRID * GRID);
+  const queue = [];
+  for (let x = 0; x < GRID; x++) {
+    if (localGrid[0*GRID+x] !== p.color) { outside[x] = 1; queue.push([x,0]); }
+    if (localGrid[(GRID-1)*GRID+x] !== p.color) { outside[(GRID-1)*GRID+x] = 1; queue.push([x,GRID-1]); }
+  }
+  for (let y = 0; y < GRID; y++) {
+    if (localGrid[y*GRID+0] !== p.color) { outside[y*GRID] = 1; queue.push([0,y]); }
+    if (localGrid[y*GRID+(GRID-1)] !== p.color) { outside[y*GRID+GRID-1] = 1; queue.push([GRID-1,y]); }
+  }
+  while (queue.length > 0) {
+    const [cx, cy] = queue.pop();
+    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
+      const nx = cx+dx, ny = cy+dy;
+      if (nx<0||nx>=GRID||ny<0||ny>=GRID) continue;
+      const idx = ny*GRID+nx;
+      if (!outside[idx] && localGrid[idx] !== p.color) {
+        outside[idx] = 1; queue.push([nx, ny]);
+      }
+    }
+  }
+
+  // Fill enclosed cells
+  for (let i = 0; i < GRID*GRID; i++) {
+    if (!outside[i]) localGrid[i] = p.color;
+  }
+}
+
+// ─────────────────────────────────────────────
+//  INPUT UPLOAD
+// ─────────────────────────────────────────────
+setInterval(async () => {
+  if (!gameRunning || !roomId || !myId) return;
+  if (pendingDir) {
+    await set(ref(db, `rooms/${roomId}/inputs/${myId}`), { dir: pendingDir });
+    myDir = pendingDir;
+    pendingDir = null;
+  }
+}, 50);
+
+// ─────────────────────────────────────────────
+//  RENDER
+// ─────────────────────────────────────────────
+function resizeCanvas() {
+  const size = Math.min(window.innerWidth, window.innerHeight);
+  canvas.width = canvas.height = size;
+  cellSize = size / GRID;
+}
+window.addEventListener('resize', () => { if (gameRunning) resizeCanvas(); });
+
+function render() {
+  if (!ctx || !grid) return;
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const cs = canvas.width / GRID;
+
+  // Draw territory
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const color = grid[y*GRID+x];
+      if (color) {
+        ctx.fillStyle = color + '66'; // semi-transparent territory
+        ctx.fillRect(x*cs, y*cs, cs, cs);
+      }
+    }
+  }
+
+  // Grid lines (subtle)
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 0.5;
+  for (let i = 0; i <= GRID; i++) {
+    ctx.beginPath(); ctx.moveTo(i*cs, 0); ctx.lineTo(i*cs, canvas.height); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0, i*cs); ctx.lineTo(canvas.width, i*cs); ctx.stroke();
+  }
+
+  // Draw trails & players
+  Object.entries(players).forEach(([id, p]) => {
+    if (!p.alive) return;
+    const isMe = id === myId;
+
+    // Trail
+    if (p.trail) {
+      p.trail.forEach(([tx, ty], i) => {
+        const alpha = 0.4 + 0.5 * (i / Math.max(p.trail.length, 1));
+        ctx.fillStyle = p.color + Math.floor(alpha*255).toString(16).padStart(2,'0');
+        ctx.fillRect(tx*cs+1, ty*cs+1, cs-2, cs-2);
+      });
+    }
+
+    // Player head
+    ctx.fillStyle = p.color;
+    const px = p.x*cs, py = p.y*cs;
+    const r = cs*0.45;
+    ctx.beginPath();
+    ctx.arc(px+cs/2, py+cs/2, r, 0, Math.PI*2);
+    ctx.fill();
+
+    if (isMe) {
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+
+    // Name label
+    ctx.fillStyle = 'white';
+    ctx.font = `bold ${Math.max(9, cs*0.7)}px 'Noto Sans KR', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    const initial = p.name.charAt(0);
+    ctx.fillText(initial, px+cs/2, py+cs/2);
+  });
+}
+
+// ─────────────────────────────────────────────
+//  HUD & LEADERBOARD
+// ─────────────────────────────────────────────
+function updateHUD() {
+  const me = players[myId];
+  if (!me) return;
+  document.getElementById('hud-name').textContent = me.name;
+  document.getElementById('hud-name').style.color = me.color;
+  const total = GRID * GRID;
+  const pct = ((me.score / total) * 100).toFixed(1);
+  document.getElementById('hud-score').textContent = `${pct}%`;
+  document.getElementById('hud-time').textContent = formatTime(timeLeft);
+}
+
+function updateLeaderboard() {
+  const lb = document.getElementById('lb-list');
+  lb.innerHTML = '';
+  const sorted = Object.values(players).sort((a,b) => b.score - a.score).slice(0,5);
+  const total = GRID * GRID;
+  sorted.forEach(p => {
+    const div = document.createElement('div');
+    div.className = 'lb-item';
+    const pct = ((p.score / total) * 100).toFixed(1);
+    div.innerHTML = `
+      <div class="lb-dot" style="background:${p.color}"></div>
+      <span>${p.name}${p.alive ? '' : ' 💀'}</span>
+      <span class="lb-pct">${pct}%</span>
+    `;
+    lb.appendChild(div);
+  });
+}
+
+function formatTime(s) {
+  return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
+}
+
+// ─────────────────────────────────────────────
+//  GAME END
+// ─────────────────────────────────────────────
+function endGame() {
+  if (!gameRunning) return;
+  gameRunning = false;
+  clearInterval(gameLoopInterval);
+  clearInterval(timerInterval);
+
+  off(ref(db, `rooms/${roomId}/gameState`));
+  if (isHost) update(ref(db, `rooms/${roomId}`), { status: 'ended' });
+
+  // Results
+  const total = GRID * GRID;
+  const sorted = Object.values(players).sort((a,b) => b.score - a.score);
+  const me = players[myId];
+  const myRank = sorted.findIndex(p => p.color === me?.color) + 1;
+  const isWinner = myRank === 1;
+
+  document.getElementById('resultTitle').textContent = isWinner ? '🏆 우승!' : `${myRank}위`;
+  document.getElementById('resultTitle').className = 'result-title ' + (isWinner ? 'win' : 'lose');
+
+  const statsDiv = document.getElementById('resultStats');
+  statsDiv.innerHTML = sorted.map((p, i) => `
+    <div class="stat-row">
+      <span>${i+1}위 <span style="color:${p.color}">${p.name}</span></span>
+      <span>${((p.score/total)*100).toFixed(1)}%</span>
+    </div>
+  `).join('');
+
+  showScreen('gameover');
+}
+
+async function leaveRoom() {
+  gameRunning = false;
+  clearInterval(gameLoopInterval);
+  clearInterval(timerInterval);
+
+  if (roomId && myId) {
+    try {
+      await remove(ref(db, `rooms/${roomId}/players/${myId}`));
+      await remove(ref(db, `rooms/${roomId}/inputs/${myId}`));
+    } catch(e) {}
+  }
+  roomId = null; myId = null; isHost = false;
+}
+
+</script>
+
+<!-- ══════════════ HTML ══════════════ -->
+
+<div id="toast"></div>
+
+<!-- TITLE SCREEN -->
+<div id="screen-title" class="screen">
+  <div class="logo">PAPER.IO</div>
+  <div class="subtitle">실시간 멀티플레이어</div>
+
+  <div id="config-warning">
+    ⚠️ Firebase 설정이 필요해요!<br>
+    HTML 파일의 <code>firebaseConfig</code> 부분을<br>
+    본인 Firebase 프로젝트 설정으로 교체하세요.<br><br>
+    <strong>방법:</strong> Firebase Console → 프로젝트 설정 → 앱 추가(웹) → 설정 복사
+  </div>
+
+  <div class="input-group">
+    <label>닉네임</label>
+    <input type="text" id="playerName" placeholder="이름 입력" maxlength="10">
+  </div>
+
+  <div class="input-group">
+    <label>색상 선택</label>
+    <div class="color-picker" id="colorPicker"></div>
+  </div>
+
+  <button class="btn btn-primary" id="btnCreate">🎮 방 만들기</button>
+
+  <div class="input-group">
+    <label>방 코드로 참가</label>
+    <input type="text" id="roomCode" placeholder="4자리 코드" maxlength="4" style="text-transform:uppercase;letter-spacing:4px;font-size:1.2rem;text-align:center">
+  </div>
+  <button class="btn btn-secondary" id="btnJoin">🚪 참가하기</button>
+</div>
+
+<!-- LOBBY SCREEN -->
+<div id="screen-lobby" class="screen">
+  <div class="room-code-display">
+    <div class="label">방 코드</div>
+    <div class="code" id="displayRoomCode">----</div>
+  </div>
+  <div class="player-list" id="playerList"></div>
+  <div class="status-msg" id="lobbyStatus">대기 중...</div>
+  <button class="btn btn-primary" id="btnStart" style="display:none">▶ 게임 시작</button>
+  <button class="btn btn-secondary" id="btnLeave">나가기</button>
+</div>
+
+<!-- GAME SCREEN -->
+<div id="screen-game" class="screen">
+  <div id="hud">
+    <span id="hud-name">Player</span>
+    <span id="hud-score">0%</span>
+    <span id="hud-time">02:00</span>
+  </div>
+
+  <div id="leaderboard">
+    <h4>순위</h4>
+    <div id="lb-list"></div>
+  </div>
+
+  <canvas id="gameCanvas"></canvas>
+
+  <!-- D-Pad -->
+  <div id="dpad">
+    <div class="dpad-empty"></div>
+    <button class="dpad-btn" id="btnUp">▲</button>
+    <div class="dpad-empty"></div>
+    <button class="dpad-btn" id="btnLeft">◀</button>
+    <div class="dpad-empty"></div>
+    <button class="dpad-btn" id="btnRight">▶</button>
+    <div class="dpad-empty"></div>
+    <button class="dpad-btn" id="btnDown">▼</button>
+    <div class="dpad-empty"></div>
+  </div>
+</div>
+
+<!-- GAME OVER SCREEN -->
+<div id="screen-gameover" class="screen">
+  <div id="resultTitle" class="result-title win">결과</div>
+  <div class="result-stats" id="resultStats"></div>
+  <button class="btn btn-primary" id="btnReplay">🔄 다시 하기</button>
+  <button class="btn btn-secondary" id="btnHome">🏠 처음으로</button>
+</div>
+
+</body>
+</html>
