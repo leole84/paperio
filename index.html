@@ -31,12 +31,10 @@
     overflow: hidden;
   }
 
-  /* ── SCREENS ── */
   .screen { display: none; width: 100%; max-width: 480px; padding: 24px; }
   .screen.active { display: flex; flex-direction: column; align-items: center; gap: 16px; }
 
-  /* TITLE */
-  #screen-title { gap: 24px; }
+  #screen-title { gap: 20px; }
   .logo {
     font-family: 'Black Han Sans', sans-serif;
     font-size: 3rem;
@@ -44,49 +42,42 @@
     background: linear-gradient(135deg, var(--accent), #00aaff);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    text-shadow: none;
     animation: pulse 3s ease-in-out infinite;
   }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
-
-  .subtitle { color: var(--muted); font-size: .85rem; letter-spacing: 2px; text-transform: uppercase; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.75} }
+  .subtitle { color: var(--muted); font-size: .8rem; letter-spacing: 2px; text-transform: uppercase; }
 
   .input-group { width: 100%; display: flex; flex-direction: column; gap: 8px; }
-  label { font-size: .75rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+  label { font-size: .72rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
   input[type=text] {
-    width: 100%;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 12px 16px;
-    color: var(--text);
-    font-size: 1rem;
-    font-family: inherit;
-    outline: none;
-    transition: border-color .2s;
+    width: 100%; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 14px; color: var(--text);
+    font-size: 1rem; font-family: inherit; outline: none; transition: border-color .2s;
   }
   input[type=text]:focus { border-color: var(--accent); }
 
-  .color-picker { display: flex; gap: 10px; flex-wrap: wrap; }
+  /* color + bg pickers */
+  .color-picker { display: flex; gap: 8px; flex-wrap: wrap; }
   .color-btn {
-    width: 36px; height: 36px;
-    border-radius: 50%;
-    border: 3px solid transparent;
-    cursor: pointer;
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 3px solid transparent; cursor: pointer;
     transition: transform .15s, border-color .15s;
   }
   .color-btn.selected { border-color: white; transform: scale(1.2); }
 
+  .bg-picker { display: flex; gap: 8px; flex-wrap: wrap; }
+  .bg-btn {
+    width: 34px; height: 34px; border-radius: 6px;
+    border: 3px solid transparent; cursor: pointer;
+    transition: transform .15s, border-color .15s;
+    position: relative;
+  }
+  .bg-btn.selected { border-color: white; transform: scale(1.15); }
+
   .btn {
-    width: 100%;
-    padding: 14px;
-    border: none;
-    border-radius: 10px;
-    font-size: 1rem;
-    font-family: 'Black Han Sans', sans-serif;
-    cursor: pointer;
-    letter-spacing: 1px;
-    transition: transform .1s, opacity .1s;
+    width: 100%; padding: 13px; border: none; border-radius: 10px;
+    font-size: 1rem; font-family: 'Black Han Sans', sans-serif;
+    cursor: pointer; letter-spacing: 1px; transition: transform .1s, opacity .1s;
   }
   .btn:active { transform: scale(.97); }
   .btn-primary { background: var(--accent); color: #000; }
@@ -94,165 +85,155 @@
   .btn:disabled { opacity: .4; cursor: not-allowed; }
 
   /* LOBBY */
-  #screen-lobby { gap: 16px; }
   .room-code-display {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 20px;
-    width: 100%;
-    text-align: center;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 12px; padding: 18px; width: 100%; text-align: center;
   }
-  .room-code-display .label { font-size: .7rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
+  .room-code-display .label { font-size: .68rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 6px; }
   .room-code-display .code {
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 2.5rem;
-    letter-spacing: 8px;
-    color: var(--accent);
+    font-family: 'Black Han Sans', sans-serif; font-size: 2.4rem;
+    letter-spacing: 8px; color: var(--accent);
   }
-
   .player-list { width: 100%; display: flex; flex-direction: column; gap: 8px; }
   .player-item {
     display: flex; align-items: center; gap: 12px;
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 10px 14px;
-    animation: slideIn .2s ease;
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; padding: 10px 14px; animation: slideIn .2s ease;
   }
-  @keyframes slideIn { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:none} }
-  .player-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
-  .player-name { flex: 1; font-size: .95rem; }
-  .player-badge { font-size: .65rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; }
-
-  .status-msg { font-size: .8rem; color: var(--muted); text-align: center; }
+  @keyframes slideIn { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:none} }
+  .player-dot { width: 13px; height: 13px; border-radius: 50%; flex-shrink: 0; }
+  .player-name { flex: 1; font-size: .92rem; }
+  .player-badge { font-size: .62rem; color: var(--muted); border: 1px solid var(--border); border-radius: 4px; padding: 2px 6px; }
+  .status-msg { font-size: .78rem; color: var(--muted); text-align: center; }
 
   /* GAME */
   #screen-game {
-    display: none;
-    width: 100vw; max-width: 100vw;
-    height: 100vh;
-    padding: 0;
-    position: relative;
-    flex-direction: column;
+    display: none; width: 100vw; max-width: 100vw;
+    height: 100vh; padding: 0; position: relative; flex-direction: column;
   }
   #screen-game.active { display: flex; }
 
+  /* HUD */
   #hud {
     position: absolute; top: 0; left: 0; right: 0;
     display: flex; justify-content: space-between; align-items: center;
-    padding: 10px 16px;
-    background: rgba(10,10,15,.7);
-    backdrop-filter: blur(6px);
-    z-index: 10;
-    pointer-events: none;
+    padding: 8px 14px;
+    background: rgba(10,10,15,.75);
+    backdrop-filter: blur(8px);
+    z-index: 20; pointer-events: none;
+    gap: 10px;
   }
-  #hud-name { font-family: 'Black Han Sans', sans-serif; font-size: 1rem; }
-  #hud-score { font-size: .85rem; color: var(--accent); }
-  #hud-time { font-size: .85rem; color: var(--muted); }
+  #hud-left { display: flex; align-items: center; gap: 8px; }
+  #hud-name { font-family: 'Black Han Sans', sans-serif; font-size: .95rem; }
+  #hud-rank {
+    background: rgba(255,255,255,.1); border-radius: 20px;
+    padding: 2px 10px; font-size: .75rem; font-weight: 700; color: #fff;
+  }
+  #hud-rank.rank1 { background: linear-gradient(90deg,#ffd700,#ffaa00); color: #000; }
+  #hud-rank.rank2 { background: linear-gradient(90deg,#c0c0c0,#909090); color: #000; }
+  #hud-rank.rank3 { background: linear-gradient(90deg,#cd7f32,#a05020); color: #fff; }
+  #hud-score { font-size: .85rem; color: var(--accent); font-weight: 700; }
+  #hud-time { font-size: .85rem; color: var(--muted); font-variant-numeric: tabular-nums; }
 
+  /* LEADERBOARD */
   #leaderboard {
-    position: absolute; top: 52px; right: 12px;
-    background: rgba(18,18,26,.85);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 14px;
-    min-width: 140px;
-    z-index: 10;
-    pointer-events: none;
+    position: absolute; top: 48px; right: 10px;
+    background: rgba(12,12,20,.88);
+    border: 1px solid rgba(255,255,255,.08);
+    border-radius: 12px; padding: 10px 14px; min-width: 150px;
+    z-index: 20; pointer-events: none;
+    backdrop-filter: blur(6px);
   }
-  #leaderboard h4 { font-size: .65rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; }
-  .lb-item { display: flex; align-items: center; gap: 8px; font-size: .8rem; margin-bottom: 4px; }
+  #leaderboard h4 { font-size: .6rem; color: var(--muted); letter-spacing: 2px; margin-bottom: 8px; text-transform: uppercase; }
+  .lb-item {
+    display: flex; align-items: center; gap: 7px;
+    font-size: .78rem; margin-bottom: 5px; transition: opacity .3s;
+  }
+  .lb-item.dead { opacity: .4; }
+  .lb-num { font-size: .65rem; color: var(--muted); width: 12px; text-align: right; }
   .lb-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-  .lb-pct { margin-left: auto; color: var(--accent); font-size: .75rem; }
+  .lb-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 72px; }
+  .lb-pct { color: var(--accent); font-size: .72rem; font-weight: 700; }
 
-  canvas {
-    display: block;
-    width: 100%;
-    height: 100%;
-    touch-action: none;
+  /* SCORE POPUP */
+  .score-popup {
+    position: absolute; pointer-events: none;
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 1.1rem; color: #fff;
+    text-shadow: 0 0 8px rgba(0,255,200,.8);
+    z-index: 30;
+    animation: popUp .9s ease forwards;
+  }
+  @keyframes popUp {
+    0% { opacity:1; transform: translateY(0) scale(1); }
+    100% { opacity:0; transform: translateY(-40px) scale(1.4); }
   }
 
-  /* D-PAD */
+  canvas { display: block; width: 100%; height: 100%; cursor: none; touch-action: none; }
+
+  /* D-PAD (mobile) */
   #dpad {
-    position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
     display: grid;
-    grid-template-columns: 56px 56px 56px;
-    grid-template-rows: 56px 56px 56px;
-    gap: 4px;
-    z-index: 10;
+    grid-template-columns: 52px 52px 52px;
+    grid-template-rows: 52px 52px 52px;
+    gap: 4px; z-index: 20;
   }
   .dpad-btn {
-    background: rgba(255,255,255,.08);
-    border: 1px solid rgba(255,255,255,.15);
-    border-radius: 10px;
-    color: white;
-    font-size: 1.2rem;
-    cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    transition: background .1s;
+    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 10px; color: white; font-size: 1.1rem;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    user-select: none; -webkit-tap-highlight-color: transparent; transition: background .1s;
   }
-  .dpad-btn:active, .dpad-btn.pressed { background: rgba(0,255,204,.25); border-color: var(--accent); }
+  .dpad-btn.pressed { background: rgba(0,255,204,.2); border-color: var(--accent); }
   .dpad-empty { background: none; border: none; pointer-events: none; }
 
   /* GAME OVER */
   #screen-gameover { gap: 20px; }
-  .result-title {
-    font-family: 'Black Han Sans', sans-serif;
-    font-size: 2.2rem;
-    text-align: center;
-  }
+  .result-title { font-family: 'Black Han Sans', sans-serif; font-size: 2.2rem; text-align: center; }
   .result-title.win { color: var(--accent); }
   .result-title.lose { color: var(--danger); }
   .result-stats { width: 100%; }
   .stat-row {
-    display: flex; justify-content: space-between;
-    padding: 10px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: .9rem;
+    display: flex; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border); font-size: .88rem;
   }
   .stat-row span:last-child { color: var(--accent); font-weight: 700; }
 
-  /* CONFIG warning */
-  #config-warning {
-    background: #2a1a00;
-    border: 1px solid #ff9900;
-    border-radius: 10px;
-    padding: 14px 16px;
-    font-size: .8rem;
-    line-height: 1.6;
-    color: #ffcc66;
-    display: none;
-    width: 100%;
-  }
-  #config-warning.show { display: block; }
-  #config-warning code { background: rgba(0,0,0,.3); padding: 1px 5px; border-radius: 3px; font-size: .75rem; }
-
-  /* Toast */
+  /* TOAST */
   #toast {
-    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-    background: rgba(0,0,0,.85);
-    color: var(--text);
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: .85rem;
-    z-index: 999;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity .3s;
+    position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%);
+    background: rgba(0,0,0,.88); color: var(--text);
+    padding: 9px 18px; border-radius: 20px; font-size: .83rem;
+    z-index: 999; pointer-events: none; opacity: 0; transition: opacity .3s;
   }
   #toast.show { opacity: 1; }
+
+  /* COUNTDOWN */
+  #countdown {
+    position: absolute; inset: 0; display: none;
+    align-items: center; justify-content: center; z-index: 50;
+    background: rgba(0,0,0,.5); backdrop-filter: blur(4px);
+  }
+  #countdown.show { display: flex; }
+  #countdown-num {
+    font-family: 'Black Han Sans', sans-serif;
+    font-size: 8rem; color: var(--accent);
+    text-shadow: 0 0 40px rgba(0,255,204,.6);
+    animation: countPop .8s ease;
+  }
+  @keyframes countPop {
+    0% { transform: scale(2); opacity: 0; }
+    50% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(.9); opacity: .7; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ══════════════ FIREBASE CONFIG ══════════════ -->
-<!-- ⚠️  아래 firebaseConfig를 본인 Firebase 프로젝트 설정으로 교체하세요! -->
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, onDisconnect, push, update, remove, off }
+import { getDatabase, ref, set, get, onValue, onDisconnect, update, remove, off }
   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
 const firebaseConfig = {
@@ -266,95 +247,74 @@ const firebaseConfig = {
   measurementId: "G-YY2K417F5M"
 };
 
-// ─────────────────────────────────────────────
-//  CONSTANTS
-// ─────────────────────────────────────────────
-const GRID = 80;          // 맵 그리드 크기
-const CELL = 9;           // 픽셀 per cell (캔버스 크기에 따라 자동 조정)
-const GAME_DURATION = 120; // 게임 시간(초)
-const COLORS = ['#ff3366','#00ffcc','#ffcc00','#aa66ff','#ff6600','#00aaff'];
-const COLOR_NAMES = ['레드','그린','옐로우','퍼플','오렌지','블루'];
-const DIRS = { UP:[0,-1], DOWN:[0,1], LEFT:[-1,0], RIGHT:[1,0] };
+// ───────────────── CONSTANTS ─────────────────
+const GRID = 80;
+const GAME_DURATION = 120;
+const TICK_MS = 140;
 
-// ─────────────────────────────────────────────
-//  STATE
-// ─────────────────────────────────────────────
+const PLAYER_COLORS = ['#ff3366','#00ffcc','#ffcc00','#aa66ff','#ff6600','#00aaff'];
+const BG_OPTIONS = [
+  { color: '#0a0a0f', label: '블랙' },
+  { color: '#0d1b2a', label: '네이비' },
+  { color: '#1a0a0a', label: '다크레드' },
+  { color: '#0a1a0a', label: '다크그린' },
+  { color: '#1a1a2e', label: '미드나잇' },
+  { color: '#2a2a2a', label: '다크그레이' },
+];
+
+// ───────────────── STATE ─────────────────────
 let app, db;
-let myId = null, roomId = null;
-let isHost = false;
+let myId = null, roomId = null, isHost = false;
 let gameLoopInterval = null, timerInterval = null;
 let timeLeft = GAME_DURATION;
-
 let myDir = 'RIGHT', pendingDir = null;
-let players = {};      // { id: { name, color, x, y, trail, territory, alive, score } }
-let grid = [];         // GRID×GRID 배색 배열 (null or colorHex)
+let players = {}, grid = [];
 let gameRunning = false;
+let bgColor = '#0a0a0f';
+let selectedBg = '#0a0a0f';
 
-// Canvas
-let canvas, ctx, cellSize;
+// canvas & particles
+let canvas, ctx;
+let particles = []; // local explosion particles
+let mouseAngle = 0; // radians from center to mouse
 
-// DOM refs
-const screens = {};
-let configWarning;
-
-// ─────────────────────────────────────────────
-//  INIT
-// ─────────────────────────────────────────────
+// ───────────────── INIT ──────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Check config
-  configWarning = document.getElementById('config-warning');
-  if (firebaseConfig.apiKey === 'YOUR_API_KEY') {
-    configWarning.classList.add('show');
-  }
-
-  try {
-    app = initializeApp(firebaseConfig);
-    db = getDatabase(app);
-  } catch(e) {
-    configWarning.classList.add('show');
-    return;
-  }
-
-  ['title','lobby','game','gameover'].forEach(id => {
-    screens[id] = document.getElementById('screen-' + id);
-  });
+  try { app = initializeApp(firebaseConfig); db = getDatabase(app); }
+  catch(e) { alert('Firebase 초기화 실패: ' + e.message); return; }
 
   canvas = document.getElementById('gameCanvas');
   ctx = canvas.getContext('2d');
 
   setupColorPicker();
+  setupBgPicker();
   setupButtons();
   setupInput();
   showScreen('title');
 });
 
-// ─────────────────────────────────────────────
-//  UI HELPERS
-// ─────────────────────────────────────────────
+// ───────────────── UI ────────────────────────
 function showScreen(name) {
-  Object.values(screens).forEach(s => s.classList.remove('active'));
-  screens[name].classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + name).classList.add('active');
   if (name === 'game') resizeCanvas();
 }
 
-function toast(msg, dur=2000) {
+function toast(msg, dur = 2200) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// ─────────────────────────────────────────────
-//  COLOR PICKER
-// ─────────────────────────────────────────────
-let selectedColor = COLORS[0];
+// ───────────────── PICKERS ───────────────────
+let selectedColor = PLAYER_COLORS[0];
+
 function setupColorPicker() {
   const picker = document.getElementById('colorPicker');
-  COLORS.forEach((c, i) => {
+  PLAYER_COLORS.forEach((c, i) => {
     const btn = document.createElement('button');
     btn.className = 'color-btn' + (i === 0 ? ' selected' : '');
     btn.style.background = c;
-    btn.title = COLOR_NAMES[i];
     btn.onclick = () => {
       document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('selected'));
       btn.classList.add('selected');
@@ -364,73 +324,97 @@ function setupColorPicker() {
   });
 }
 
-// ─────────────────────────────────────────────
-//  BUTTON SETUP
-// ─────────────────────────────────────────────
+function setupBgPicker() {
+  const picker = document.getElementById('bgPicker');
+  BG_OPTIONS.forEach((opt, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'bg-btn' + (i === 0 ? ' selected' : '');
+    btn.style.background = opt.color;
+    btn.title = opt.label;
+    btn.onclick = () => {
+      document.querySelectorAll('.bg-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      selectedBg = opt.color;
+    };
+    picker.appendChild(btn);
+  });
+}
+
+// ───────────────── BUTTONS ───────────────────
 function setupButtons() {
   document.getElementById('btnCreate').onclick = createRoom;
   document.getElementById('btnJoin').onclick = joinRoom;
   document.getElementById('btnStart').onclick = startGame;
-  document.getElementById('btnLeave').onclick = leaveRoom;
+  document.getElementById('btnLeave').onclick = () => { leaveRoom(); showScreen('title'); };
   document.getElementById('btnReplay').onclick = () => { leaveRoom(); showScreen('title'); };
   document.getElementById('btnHome').onclick = () => { leaveRoom(); showScreen('title'); };
 
-  // D-pad
   const dpad = { UP:'btnUp', DOWN:'btnDown', LEFT:'btnLeft', RIGHT:'btnRight' };
   Object.entries(dpad).forEach(([dir, id]) => {
     const btn = document.getElementById(id);
-    ['touchstart','mousedown'].forEach(ev => {
-      btn.addEventListener(ev, e => {
-        e.preventDefault();
-        setDir(dir);
-        btn.classList.add('pressed');
-      });
-    });
-    ['touchend','mouseup','mouseleave'].forEach(ev => {
-      btn.addEventListener(ev, () => btn.classList.remove('pressed'));
-    });
+    ['touchstart','mousedown'].forEach(ev =>
+      btn.addEventListener(ev, e => { e.preventDefault(); setDir(dir); btn.classList.add('pressed'); }));
+    ['touchend','mouseup','mouseleave'].forEach(ev =>
+      btn.addEventListener(ev, () => btn.classList.remove('pressed')));
   });
 }
 
-// ─────────────────────────────────────────────
-//  KEYBOARD
-// ─────────────────────────────────────────────
+// ───────────────── INPUT ─────────────────────
 function setupInput() {
+  // Keyboard
   document.addEventListener('keydown', e => {
     if (!gameRunning) return;
-    const map = { ArrowUp:'UP', ArrowDown:'DOWN', ArrowLeft:'LEFT', ArrowRight:'RIGHT',
-                  w:'UP', s:'DOWN', a:'LEFT', d:'RIGHT',
-                  W:'UP', S:'DOWN', A:'LEFT', D:'RIGHT' };
+    const map = {
+      ArrowUp:'UP', ArrowDown:'DOWN', ArrowLeft:'LEFT', ArrowRight:'RIGHT',
+      w:'UP', s:'DOWN', a:'LEFT', d:'RIGHT',
+      W:'UP', S:'DOWN', A:'LEFT', D:'RIGHT'
+    };
     if (map[e.key]) { e.preventDefault(); setDir(map[e.key]); }
+  });
+
+  // Mouse direction
+  document.addEventListener('mousemove', e => {
+    if (!gameRunning || !canvas) return;
+    const me = players[myId];
+    if (!me || !me.alive) return;
+    const cs = canvas.width / GRID;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const mx = (e.clientX - rect.left) * scaleX;
+    const my = (e.clientY - rect.top) * scaleY;
+    const px = (me.x + 0.5) * cs;
+    const py = (me.y + 0.5) * cs;
+    const dx = mx - px, dy = my - py;
+    if (Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+    mouseAngle = Math.atan2(dy, dx);
+    // Convert angle to 4-dir
+    const a = mouseAngle;
+    let dir;
+    if (a > -Math.PI/4 && a <= Math.PI/4) dir = 'RIGHT';
+    else if (a > Math.PI/4 && a <= 3*Math.PI/4) dir = 'DOWN';
+    else if (a > -3*Math.PI/4 && a <= -Math.PI/4) dir = 'UP';
+    else dir = 'LEFT';
+    setDir(dir);
   });
 }
 
 function setDir(dir) {
-  const opposites = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
-  if (opposites[dir] !== myDir) pendingDir = dir;
+  const opp = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
+  if (opp[dir] !== myDir) pendingDir = dir;
 }
 
-// ─────────────────────────────────────────────
-//  ROOM MANAGEMENT
-// ─────────────────────────────────────────────
-function genRoomId() {
-  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  return Array.from({length:4}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+// ───────────────── ROOM ──────────────────────
+function genCode() {
+  const c = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:4}, () => c[Math.floor(Math.random()*c.length)]).join('');
 }
 
 async function createRoom() {
   const name = document.getElementById('playerName').value.trim() || '익명';
-  roomId = genRoomId();
-  isHost = true;
-  myId = 'p_' + Date.now();
-
-  const roomRef = ref(db, `rooms/${roomId}`);
-  await set(roomRef, {
-    status: 'waiting',
-    host: myId,
-    created: Date.now()
-  });
-
+  roomId = genCode(); isHost = true; myId = 'p_' + Date.now();
+  bgColor = selectedBg;
+  await set(ref(db, `rooms/${roomId}`), { status:'waiting', host:myId, bg:bgColor, created:Date.now() });
   await joinAsPlayer(name);
   showLobby();
 }
@@ -439,380 +423,395 @@ async function joinRoom() {
   const name = document.getElementById('playerName').value.trim() || '익명';
   const code = document.getElementById('roomCode').value.trim().toUpperCase();
   if (code.length !== 4) { toast('방 코드 4자리를 입력하세요'); return; }
-
-  const roomSnap = await get(ref(db, `rooms/${code}`));
-  if (!roomSnap.exists()) { toast('방을 찾을 수 없어요'); return; }
-  if (roomSnap.val().status !== 'waiting') { toast('이미 게임 중인 방이에요'); return; }
-
-  const playersSnap = await get(ref(db, `rooms/${code}/players`));
-  const existing = playersSnap.exists() ? Object.keys(playersSnap.val()) : [];
-  if (existing.length >= 6) { toast('방이 가득 찼어요 (최대 6명)'); return; }
-
-  roomId = code;
-  isHost = false;
-  myId = 'p_' + Date.now();
-
+  const snap = await get(ref(db, `rooms/${code}`));
+  if (!snap.exists()) { toast('방을 찾을 수 없어요'); return; }
+  if (snap.val().status !== 'waiting') { toast('이미 게임 중인 방이에요'); return; }
+  const ps = await get(ref(db, `rooms/${code}/players`));
+  if (ps.exists() && Object.keys(ps.val()).length >= 6) { toast('방이 가득 찼어요'); return; }
+  bgColor = snap.val().bg || '#0a0a0f';
+  roomId = code; isHost = false; myId = 'p_' + Date.now();
   await joinAsPlayer(name);
   showLobby();
 }
 
 async function joinAsPlayer(name) {
-  // Pick a color not used
   const snap = await get(ref(db, `rooms/${roomId}/players`));
-  const usedColors = snap.exists() ? Object.values(snap.val()).map(p => p.color) : [];
-  const color = selectedColor && !usedColors.includes(selectedColor)
-    ? selectedColor
-    : COLORS.find(c => !usedColors.includes(c)) || COLORS[0];
-
-  const playerRef = ref(db, `rooms/${roomId}/players/${myId}`);
-  await set(playerRef, { name, color, alive: true, score: 0, ready: false });
-
-  // Clean up on disconnect
-  onDisconnect(playerRef).remove();
-  onDisconnect(ref(db, `rooms/${roomId}/host`)).set(null); // optional
+  const used = snap.exists() ? Object.values(snap.val()).map(p => p.color) : [];
+  const color = !used.includes(selectedColor) ? selectedColor : (PLAYER_COLORS.find(c => !used.includes(c)) || PLAYER_COLORS[0]);
+  const pr = ref(db, `rooms/${roomId}/players/${myId}`);
+  await set(pr, { name, color, alive:true, score:0 });
+  onDisconnect(pr).remove();
+  onDisconnect(ref(db, `rooms/${roomId}/inputs/${myId}`)).remove();
 }
 
 function showLobby() {
   document.getElementById('displayRoomCode').textContent = roomId;
-  const startBtn = document.getElementById('btnStart');
-  startBtn.style.display = isHost ? 'block' : 'none';
+  document.getElementById('btnStart').style.display = isHost ? 'block' : 'none';
   showScreen('lobby');
-
-  // Watch players
-  onValue(ref(db, `rooms/${roomId}/players`), snap => {
-    const data = snap.val() || {};
-    renderPlayerList(data);
-  });
-
-  // Watch game start
+  onValue(ref(db, `rooms/${roomId}/players`), snap => renderPlayerList(snap.val() || {}));
   onValue(ref(db, `rooms/${roomId}/status`), snap => {
-    if (snap.val() === 'playing') {
-      initGame();
-    }
+    if (snap.val() === 'countdown') startCountdown();
+    if (snap.val() === 'playing') initGame();
   });
 }
 
 function renderPlayerList(data) {
   const list = document.getElementById('playerList');
   list.innerHTML = '';
-  const roomSnap = db; // just use data
   Object.entries(data).forEach(([id, p]) => {
     const div = document.createElement('div');
     div.className = 'player-item';
-    div.innerHTML = `
-      <div class="player-dot" style="background:${p.color}"></div>
+    div.innerHTML = `<div class="player-dot" style="background:${p.color}"></div>
       <span class="player-name">${p.name}</span>
-      ${id === myId ? '<span class="player-badge">나</span>' : ''}
-    `;
+      ${id === myId ? '<span class="player-badge">나</span>' : ''}`;
     list.appendChild(div);
   });
-  const count = Object.keys(data).length;
+  const n = Object.keys(data).length;
   document.getElementById('lobbyStatus').textContent =
-    `${count}명 입장 중 · ${isHost ? '게임 시작 버튼을 누르세요' : '호스트가 시작할 때까지 대기'}`;
+    `${n}명 입장 중 · ${isHost ? '시작 버튼을 누르세요' : '호스트 대기 중'}`;
 }
 
+// ───────────────── START ─────────────────────
 async function startGame() {
   if (!isHost) return;
   const snap = await get(ref(db, `rooms/${roomId}/players`));
-  if (!snap.exists() || Object.keys(snap.val()).length < 1) {
-    toast('최소 1명 필요해요');
-    return;
-  }
-  // Build initial game state
+  if (!snap.exists()) { toast('플레이어가 없어요'); return; }
   const pData = snap.val();
   const pIds = Object.keys(pData);
-  const startPositions = generateStartPositions(pIds.length);
-
-  // Init grid (all null)
+  const starts = genStarts(pIds.length);
   const flatGrid = new Array(GRID * GRID).fill(null);
+  const gs = { grid: flatGrid, players: {}, tick: 0 };
 
-  // Place players
-  const gameState = { grid: flatGrid, players: {}, tick: 0 };
   pIds.forEach((id, i) => {
-    const [sx, sy] = startPositions[i];
+    const [sx, sy] = starts[i];
     const p = pData[id];
-    // Mark initial territory (3×3)
     for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) {
       const nx = sx+dx, ny = sy+dy;
       if (nx>=0&&nx<GRID&&ny>=0&&ny<GRID) flatGrid[ny*GRID+nx] = p.color;
     }
-    gameState.players[id] = {
-      name: p.name, color: p.color,
-      x: sx, y: sy,
-      dir: 'RIGHT',
-      trail: [],
-      alive: true,
-      score: 9
-    };
+    gs.players[id] = { name:p.name, color:p.color, x:sx, y:sy, dir:'RIGHT', trail:[], alive:true, score:9 };
   });
 
-  await set(ref(db, `rooms/${roomId}/gameState`), gameState);
-  await update(ref(db, `rooms/${roomId}`), { status: 'playing', startTime: Date.now() });
+  await set(ref(db, `rooms/${roomId}/gameState`), gs);
+  await update(ref(db, `rooms/${roomId}`), { status:'countdown', startTime: Date.now() + 3500 });
 }
 
-function generateStartPositions(n) {
-  const margin = 10;
-  const positions = [
-    [margin, margin],
-    [GRID-margin, GRID-margin],
-    [GRID-margin, margin],
-    [margin, GRID-margin],
-    [GRID/2, margin],
-    [GRID/2, GRID-margin],
-  ];
-  return positions.slice(0, n);
+function genStarts(n) {
+  const m = 10;
+  return [
+    [m, m], [GRID-m, GRID-m], [GRID-m, m], [m, GRID-m],
+    [Math.floor(GRID/2), m], [Math.floor(GRID/2), GRID-m]
+  ].slice(0, n);
 }
 
-// ─────────────────────────────────────────────
-//  GAME INIT
-// ─────────────────────────────────────────────
+// ───────────────── COUNTDOWN ─────────────────
+function startCountdown() {
+  const overlay = document.getElementById('countdown');
+  const num = document.getElementById('countdown-num');
+  showScreen('game');
+  overlay.classList.add('show');
+
+  // Apply bg
+  canvas.style.background = bgColor;
+  document.body.style.background = bgColor;
+
+  let c = 3;
+  num.textContent = c;
+  const iv = setInterval(() => {
+    c--;
+    if (c <= 0) {
+      clearInterval(iv);
+      num.textContent = 'GO!';
+      setTimeout(() => overlay.classList.remove('show'), 600);
+    } else {
+      num.textContent = c;
+      num.style.animation = 'none';
+      requestAnimationFrame(() => { num.style.animation = 'countPop .8s ease'; });
+    }
+  }, 1000);
+}
+
+// ───────────────── GAME INIT ─────────────────
 function initGame() {
   off(ref(db, `rooms/${roomId}/players`));
-  off(ref(db, `rooms/${roomId}/status`));
-  showScreen('game');
-  timeLeft = GAME_DURATION;
-  gameRunning = true;
+  gameRunning = true; timeLeft = GAME_DURATION;
+  particles = [];
   pendingDir = null;
 
-  // Watch game state
   onValue(ref(db, `rooms/${roomId}/gameState`), snap => {
     if (!snap.exists()) return;
     const gs = snap.val();
+    const prevPlayers = { ...players };
     grid = gs.grid;
     players = gs.players || {};
+
+    // Detect newly dead → spawn explosion
+    Object.entries(players).forEach(([id, p]) => {
+      const prev = prevPlayers[id];
+      if (prev && prev.alive && !p.alive) spawnExplosion(p.x, p.y, p.color);
+    });
+
     render();
     updateHUD();
     updateLeaderboard();
 
-    // Check if I'm dead
-    if (players[myId] && !players[myId].alive && gameRunning) {
-      // still spectate
-    }
-    // Check game end
     const alive = Object.values(players).filter(p => p.alive);
-    if (alive.length <= 1 && Object.keys(players).length > 1) {
-      endGame();
-    }
+    if (alive.length <= 1 && Object.keys(players).length > 1) endGame();
   });
 
-  // Host drives the game tick
   if (isHost) {
-    gameLoopInterval = setInterval(gameTick, 150);
+    gameLoopInterval = setInterval(gameTick, TICK_MS);
     timerInterval = setInterval(() => {
       timeLeft--;
       if (timeLeft <= 0) endGame();
     }, 1000);
+  } else {
+    get(ref(db, `rooms/${roomId}/startTime`)).then(snap => {
+      if (snap.exists()) timeLeft = Math.max(0, GAME_DURATION - Math.floor((Date.now() - snap.val()) / 1000));
+    });
+    timerInterval = setInterval(() => { timeLeft = Math.max(0, timeLeft - 1); }, 1000);
   }
 
-  // Timer display (all clients)
-  if (!isHost) {
-    timerInterval = setInterval(() => {
-      timeLeft--;
-      document.getElementById('hud-time').textContent = formatTime(timeLeft);
-    }, 1000);
-    // Sync timer from server start time
-    get(ref(db, `rooms/${roomId}/startTime`)).then(snap => {
-      if (snap.exists()) {
-        const elapsed = Math.floor((Date.now() - snap.val()) / 1000);
-        timeLeft = Math.max(0, GAME_DURATION - elapsed);
-      }
-    });
-  }
+  // Input upload loop
+  setInterval(async () => {
+    if (!gameRunning || !roomId || !myId || !pendingDir) return;
+    await set(ref(db, `rooms/${roomId}/inputs/${myId}`), { dir: pendingDir });
+    myDir = pendingDir; pendingDir = null;
+  }, 50);
+
+  requestAnimationFrame(particleLoop);
 }
 
-// ─────────────────────────────────────────────
-//  GAME TICK (HOST ONLY)
-// ─────────────────────────────────────────────
+// ───────────────── GAME TICK (HOST) ──────────
+const DIRS = { UP:[0,-1], DOWN:[0,1], LEFT:[-1,0], RIGHT:[1,0] };
+
 async function gameTick() {
   if (!gameRunning) return;
-
-  // Read latest inputs
-  const inputsSnap = await get(ref(db, `rooms/${roomId}/inputs`));
-  const inputs = inputsSnap.exists() ? inputsSnap.val() : {};
-
-  const gsSnap = await get(ref(db, `rooms/${roomId}/gameState`));
+  const [inSnap, gsSnap] = await Promise.all([
+    get(ref(db, `rooms/${roomId}/inputs`)),
+    get(ref(db, `rooms/${roomId}/gameState`))
+  ]);
   if (!gsSnap.exists()) return;
   const gs = gsSnap.val();
-  const localPlayers = gs.players || {};
-  const localGrid = gs.grid;
+  const lp = gs.players || {};
+  const lg = gs.grid;
+  const inputs = inSnap.exists() ? inSnap.val() : {};
 
-  // Apply directions
+  const opp = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
+
+  // Apply inputs
   Object.entries(inputs).forEach(([pid, inp]) => {
-    if (localPlayers[pid] && localPlayers[pid].alive) {
-      const opposites = { UP:'DOWN', DOWN:'UP', LEFT:'RIGHT', RIGHT:'LEFT' };
-      if (inp.dir && opposites[inp.dir] !== localPlayers[pid].dir)
-        localPlayers[pid].dir = inp.dir;
-    }
+    if (lp[pid]?.alive && inp.dir && opp[inp.dir] !== lp[pid].dir)
+      lp[pid].dir = inp.dir;
   });
 
-  // Move each player
-  const newPositions = {};
-  Object.entries(localPlayers).forEach(([pid, p]) => {
+  // Move
+  const newPos = {};
+  Object.entries(lp).forEach(([pid, p]) => {
     if (!p.alive) return;
-    const [dx, dy] = DIRS[p.dir] || [1, 0];
-    const nx = p.x + dx, ny = p.y + dy;
-
-    // Wall collision
-    if (nx < 0 || nx >= GRID || ny < 0 || ny >= GRID) {
-      localPlayers[pid].alive = false; return;
-    }
-
-    // Self-trail collision
-    if (p.trail && p.trail.some(t => t[0]===nx && t[1]===ny)) {
-      localPlayers[pid].alive = false; return;
-    }
-
-    newPositions[pid] = [nx, ny];
+    const [dx, dy] = DIRS[p.dir] || [1,0];
+    const nx = p.x+dx, ny = p.y+dy;
+    if (nx<0||nx>=GRID||ny<0||ny>=GRID) { lp[pid].alive=false; return; }
+    if (p.trail?.some(t => t[0]===nx && t[1]===ny)) { lp[pid].alive=false; return; }
+    newPos[pid] = [nx, ny];
   });
 
-  // Cross-player trail collision
-  Object.entries(newPositions).forEach(([pid, [nx, ny]]) => {
-    Object.entries(localPlayers).forEach(([oid, op]) => {
-      if (oid === pid || !op.alive) return;
-      if (op.trail && op.trail.some(t => t[0]===nx && t[1]===ny)) {
-        localPlayers[pid].alive = false;
-      }
+  // Cross-trail collision
+  Object.entries(newPos).forEach(([pid, [nx,ny]]) => {
+    if (!lp[pid].alive) return;
+    Object.entries(lp).forEach(([oid, op]) => {
+      if (oid===pid||!op.alive) return;
+      if (op.trail?.some(t => t[0]===nx && t[1]===ny)) lp[pid].alive=false;
     });
   });
 
   // Apply moves
-  Object.entries(newPositions).forEach(([pid, [nx, ny]]) => {
-    if (!localPlayers[pid].alive) return;
-    const p = localPlayers[pid];
-    const inTerritory = localGrid[ny*GRID+nx] === p.color;
-
-    if (inTerritory && p.trail && p.trail.length > 0) {
-      // Fill territory
-      fillTerritory(localGrid, p, localPlayers);
+  Object.entries(newPos).forEach(([pid, [nx,ny]]) => {
+    if (!lp[pid].alive) return;
+    const p = lp[pid];
+    const inTerritory = lg[ny*GRID+nx] === p.color;
+    if (inTerritory && p.trail?.length > 0) {
+      fillTerritory(lg, p, lp);
       p.trail = [];
     } else if (!inTerritory) {
       p.trail = p.trail || [];
       p.trail.push([p.x, p.y]);
-      localGrid[(p.y)*GRID+(p.x)] = null; // trail cell (will be colored on fill)
     }
-
     p.x = nx; p.y = ny;
   });
 
-  // Count scores
-  Object.keys(localPlayers).forEach(pid => {
-    const color = localPlayers[pid].color;
-    localPlayers[pid].score = localGrid.filter(c => c === color).length;
+  // Score
+  Object.keys(lp).forEach(pid => {
+    lp[pid].score = lg.filter(c => c === lp[pid].color).length;
   });
 
-  // Write back
-  await update(ref(db, `rooms/${roomId}/gameState`), {
-    grid: localGrid,
-    players: localPlayers,
-    tick: (gs.tick || 0) + 1
-  });
+  await update(ref(db, `rooms/${roomId}/gameState`), { grid:lg, players:lp, tick:(gs.tick||0)+1 });
 }
 
-function fillTerritory(localGrid, p, localPlayers) {
-  // Simple flood-fill approach: find enclosed area
+function fillTerritory(localGrid, p, lp) {
   const trail = p.trail || [];
-  if (trail.length === 0) return;
+  if (!trail.length) return;
 
-  // Mark trail cells with player color temporarily
-  trail.forEach(([tx, ty]) => { localGrid[ty*GRID+tx] = p.color; });
+  // Mark trail
+  trail.forEach(([tx,ty]) => { localGrid[ty*GRID+tx] = p.color; });
 
-  // Flood fill from all border cells to find 'outside'
-  const outside = new Uint8Array(GRID * GRID);
+  // Remove enemy trails inside newly enclosed area (land grab!)
+  const outside = new Uint8Array(GRID*GRID);
   const queue = [];
-  for (let x = 0; x < GRID; x++) {
-    if (localGrid[0*GRID+x] !== p.color) { outside[x] = 1; queue.push([x,0]); }
-    if (localGrid[(GRID-1)*GRID+x] !== p.color) { outside[(GRID-1)*GRID+x] = 1; queue.push([x,GRID-1]); }
+  const push = (x,y) => {
+    const idx = y*GRID+x;
+    if (x<0||x>=GRID||y<0||y>=GRID||outside[idx]||localGrid[idx]===p.color) return;
+    outside[idx]=1; queue.push(x,y);
+  };
+  for (let x=0;x<GRID;x++) { push(x,0); push(x,GRID-1); }
+  for (let y=0;y<GRID;y++) { push(0,y); push(GRID-1,y); }
+  while (queue.length) {
+    const y=queue.pop(), x=queue.pop();
+    push(x+1,y); push(x-1,y); push(x,y+1); push(x,y-1);
   }
-  for (let y = 0; y < GRID; y++) {
-    if (localGrid[y*GRID+0] !== p.color) { outside[y*GRID] = 1; queue.push([0,y]); }
-    if (localGrid[y*GRID+(GRID-1)] !== p.color) { outside[y*GRID+GRID-1] = 1; queue.push([GRID-1,y]); }
-  }
-  while (queue.length > 0) {
-    const [cx, cy] = queue.pop();
-    for (const [dx, dy] of [[1,0],[-1,0],[0,1],[0,-1]]) {
-      const nx = cx+dx, ny = cy+dy;
-      if (nx<0||nx>=GRID||ny<0||ny>=GRID) continue;
-      const idx = ny*GRID+nx;
-      if (!outside[idx] && localGrid[idx] !== p.color) {
-        outside[idx] = 1; queue.push([nx, ny]);
-      }
+  for (let i=0;i<GRID*GRID;i++) {
+    if (!outside[i]) {
+      localGrid[i] = p.color;
+      // Remove other player trails inside area
+      Object.entries(lp).forEach(([oid, op]) => {
+        if (oid !== p.name && op.trail) {
+          const ix = i % GRID, iy = Math.floor(i/GRID);
+          op.trail = op.trail.filter(([tx,ty]) => !(tx===ix && ty===iy));
+        }
+      });
     }
   }
+}
 
-  // Fill enclosed cells
-  for (let i = 0; i < GRID*GRID; i++) {
-    if (!outside[i]) localGrid[i] = p.color;
+// ───────────────── PARTICLES ─────────────────
+function spawnExplosion(gx, gy, color) {
+  const cs = canvas.width / GRID;
+  const cx = (gx + 0.5) * cs, cy = (gy + 0.5) * cs;
+  for (let i = 0; i < 28; i++) {
+    const angle = (Math.PI * 2 * i) / 28 + Math.random() * 0.3;
+    const speed = 2 + Math.random() * 5;
+    particles.push({
+      x: cx, y: cy,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      r: 3 + Math.random() * 5,
+      color, alpha: 1,
+      life: 1
+    });
   }
 }
 
-// ─────────────────────────────────────────────
-//  INPUT UPLOAD
-// ─────────────────────────────────────────────
-setInterval(async () => {
-  if (!gameRunning || !roomId || !myId) return;
-  if (pendingDir) {
-    await set(ref(db, `rooms/${roomId}/inputs/${myId}`), { dir: pendingDir });
-    myDir = pendingDir;
-    pendingDir = null;
+function particleLoop() {
+  if (!gameRunning) return;
+  // Just re-render if particles active
+  if (particles.length > 0) {
+    particles.forEach(p => {
+      p.x += p.vx; p.y += p.vy;
+      p.vy += 0.15;
+      p.vx *= 0.95;
+      p.life -= 0.025;
+      p.alpha = p.life;
+      p.r *= 0.97;
+    });
+    particles = particles.filter(p => p.life > 0);
+    render();
   }
-}, 50);
+  requestAnimationFrame(particleLoop);
+}
 
-// ─────────────────────────────────────────────
-//  RENDER
-// ─────────────────────────────────────────────
+// ───────────────── RENDER ────────────────────
 function resizeCanvas() {
   const size = Math.min(window.innerWidth, window.innerHeight);
   canvas.width = canvas.height = size;
-  cellSize = size / GRID;
+  canvas.style.background = bgColor;
 }
 window.addEventListener('resize', () => { if (gameRunning) resizeCanvas(); });
 
+function hexToRgb(hex) {
+  const r = parseInt(hex.slice(1,3),16);
+  const g = parseInt(hex.slice(3,5),16);
+  const b = parseInt(hex.slice(5,7),16);
+  return [r,g,b];
+}
+
 function render() {
   if (!ctx || !grid) return;
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const W = canvas.width;
+  const cs = W / GRID;
 
-  const cs = canvas.width / GRID;
+  // BG
+  ctx.fillStyle = bgColor;
+  ctx.fillRect(0, 0, W, W);
 
-  // Draw territory
+  // Territory
   for (let y = 0; y < GRID; y++) {
     for (let x = 0; x < GRID; x++) {
       const color = grid[y*GRID+x];
-      if (color) {
-        ctx.fillStyle = color + '66'; // semi-transparent territory
-        ctx.fillRect(x*cs, y*cs, cs, cs);
+      if (!color) continue;
+      // bright fill
+      ctx.fillStyle = color + 'bb';
+      ctx.fillRect(x*cs, y*cs, cs, cs);
+    }
+  }
+
+  // Territory borders (outline cells)
+  for (let y = 0; y < GRID; y++) {
+    for (let x = 0; x < GRID; x++) {
+      const color = grid[y*GRID+x];
+      if (!color) continue;
+      const neighbors = [
+        y>0 ? grid[(y-1)*GRID+x] : null,
+        y<GRID-1 ? grid[(y+1)*GRID+x] : null,
+        x>0 ? grid[y*GRID+x-1] : null,
+        x<GRID-1 ? grid[y*GRID+x+1] : null,
+      ];
+      if (neighbors.some(n => n !== color)) {
+        ctx.strokeStyle = color;
+        ctx.lineWidth = 1.5;
+        ctx.strokeRect(x*cs+0.75, y*cs+0.75, cs-1.5, cs-1.5);
       }
     }
   }
 
-  // Grid lines (subtle)
-  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.03)';
   ctx.lineWidth = 0.5;
   for (let i = 0; i <= GRID; i++) {
-    ctx.beginPath(); ctx.moveTo(i*cs, 0); ctx.lineTo(i*cs, canvas.height); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(0, i*cs); ctx.lineTo(canvas.width, i*cs); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(i*cs,0); ctx.lineTo(i*cs,W); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(0,i*cs); ctx.lineTo(W,i*cs); ctx.stroke();
   }
 
-  // Draw trails & players
+  // Trails
+  Object.values(players).forEach(p => {
+    if (!p.alive || !p.trail?.length) return;
+    const [r,g,b] = hexToRgb(p.color);
+    p.trail.forEach(([tx,ty], i) => {
+      const alpha = 0.5 + 0.5 * (i / p.trail.length);
+      ctx.fillStyle = `rgba(${r},${g},${b},${alpha})`;
+      const pad = 1;
+      ctx.fillRect(tx*cs+pad, ty*cs+pad, cs-pad*2, cs-pad*2);
+    });
+  });
+
+  // Players
   Object.entries(players).forEach(([id, p]) => {
     if (!p.alive) return;
     const isMe = id === myId;
+    const px = (p.x+0.5)*cs, py = (p.y+0.5)*cs;
+    const r = cs * 0.42;
 
-    // Trail
-    if (p.trail) {
-      p.trail.forEach(([tx, ty], i) => {
-        const alpha = 0.4 + 0.5 * (i / Math.max(p.trail.length, 1));
-        ctx.fillStyle = p.color + Math.floor(alpha*255).toString(16).padStart(2,'0');
-        ctx.fillRect(tx*cs+1, ty*cs+1, cs-2, cs-2);
-      });
+    // Glow
+    if (isMe) {
+      const grd = ctx.createRadialGradient(px, py, 0, px, py, r*2.2);
+      grd.addColorStop(0, p.color + '55');
+      grd.addColorStop(1, 'transparent');
+      ctx.fillStyle = grd;
+      ctx.beginPath(); ctx.arc(px, py, r*2.2, 0, Math.PI*2); ctx.fill();
     }
 
-    // Player head
+    // Head
     ctx.fillStyle = p.color;
-    const px = p.x*cs, py = p.y*cs;
-    const r = cs*0.45;
-    ctx.beginPath();
-    ctx.arc(px+cs/2, py+cs/2, r, 0, Math.PI*2);
-    ctx.fill();
+    ctx.beginPath(); ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
 
     if (isMe) {
       ctx.strokeStyle = 'white';
@@ -820,116 +819,122 @@ function render() {
       ctx.stroke();
     }
 
-    // Name label
+    // Initial
     ctx.fillStyle = 'white';
-    ctx.font = `bold ${Math.max(9, cs*0.7)}px 'Noto Sans KR', sans-serif`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    const initial = p.name.charAt(0);
-    ctx.fillText(initial, px+cs/2, py+cs/2);
+    ctx.font = `bold ${Math.max(8, cs*0.62)}px 'Noto Sans KR', sans-serif`;
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(p.name.charAt(0), px, py);
   });
+
+  // Particles
+  particles.forEach(p => {
+    ctx.globalAlpha = p.alpha;
+    ctx.fillStyle = p.color;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // My cursor arrow
+  const me = players[myId];
+  if (me?.alive) {
+    const px = (me.x+0.5)*cs, py = (me.y+0.5)*cs;
+    ctx.save();
+    ctx.translate(px, py);
+    ctx.rotate(mouseAngle);
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.beginPath();
+    ctx.moveTo(cs*1.2, 0);
+    ctx.lineTo(cs*0.7, -cs*0.25);
+    ctx.lineTo(cs*0.7, cs*0.25);
+    ctx.closePath();
+    ctx.fill();
+    ctx.restore();
+  }
 }
 
-// ─────────────────────────────────────────────
-//  HUD & LEADERBOARD
-// ─────────────────────────────────────────────
+// ───────────────── HUD ───────────────────────
 function updateHUD() {
-  const me = players[myId];
-  if (!me) return;
+  const me = players[myId]; if (!me) return;
   document.getElementById('hud-name').textContent = me.name;
   document.getElementById('hud-name').style.color = me.color;
-  const total = GRID * GRID;
-  const pct = ((me.score / total) * 100).toFixed(1);
+  const total = GRID*GRID;
+  const pct = ((me.score/total)*100).toFixed(1);
   document.getElementById('hud-score').textContent = `${pct}%`;
   document.getElementById('hud-time').textContent = formatTime(timeLeft);
+
+  const sorted = Object.values(players).sort((a,b)=>b.score-a.score);
+  const rank = sorted.findIndex(p=>p.color===me.color)+1;
+  const rankEl = document.getElementById('hud-rank');
+  rankEl.textContent = `${rank}위`;
+  rankEl.className = 'hud-rank rank' + Math.min(rank, 4);
 }
 
 function updateLeaderboard() {
-  const lb = document.getElementById('lb-list');
-  lb.innerHTML = '';
-  const sorted = Object.values(players).sort((a,b) => b.score - a.score).slice(0,5);
-  const total = GRID * GRID;
-  sorted.forEach(p => {
+  const lb = document.getElementById('lb-list'); lb.innerHTML='';
+  const sorted = Object.values(players).sort((a,b)=>b.score-a.score).slice(0,6);
+  const total = GRID*GRID;
+  sorted.forEach((p,i) => {
     const div = document.createElement('div');
-    div.className = 'lb-item';
-    const pct = ((p.score / total) * 100).toFixed(1);
-    div.innerHTML = `
+    div.className = 'lb-item' + (p.alive ? '' : ' dead');
+    const pct = ((p.score/total)*100).toFixed(1);
+    div.innerHTML = `<span class="lb-num">${i+1}</span>
       <div class="lb-dot" style="background:${p.color}"></div>
-      <span>${p.name}${p.alive ? '' : ' 💀'}</span>
-      <span class="lb-pct">${pct}%</span>
-    `;
+      <span class="lb-name">${p.name}</span>
+      <span class="lb-pct">${pct}%</span>`;
     lb.appendChild(div);
   });
 }
 
 function formatTime(s) {
+  s = Math.max(0, s);
   return `${Math.floor(s/60).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`;
 }
 
-// ─────────────────────────────────────────────
-//  GAME END
-// ─────────────────────────────────────────────
+// ───────────────── GAME END ──────────────────
 function endGame() {
   if (!gameRunning) return;
   gameRunning = false;
-  clearInterval(gameLoopInterval);
-  clearInterval(timerInterval);
-
+  clearInterval(gameLoopInterval); clearInterval(timerInterval);
   off(ref(db, `rooms/${roomId}/gameState`));
-  if (isHost) update(ref(db, `rooms/${roomId}`), { status: 'ended' });
+  if (isHost) update(ref(db, `rooms/${roomId}`), { status:'ended' });
 
-  // Results
-  const total = GRID * GRID;
-  const sorted = Object.values(players).sort((a,b) => b.score - a.score);
+  const total = GRID*GRID;
+  const sorted = Object.values(players).sort((a,b)=>b.score-a.score);
   const me = players[myId];
-  const myRank = sorted.findIndex(p => p.color === me?.color) + 1;
-  const isWinner = myRank === 1;
+  const myRank = sorted.findIndex(p=>p.color===me?.color)+1;
 
-  document.getElementById('resultTitle').textContent = isWinner ? '🏆 우승!' : `${myRank}위`;
-  document.getElementById('resultTitle').className = 'result-title ' + (isWinner ? 'win' : 'lose');
-
-  const statsDiv = document.getElementById('resultStats');
-  statsDiv.innerHTML = sorted.map((p, i) => `
-    <div class="stat-row">
+  document.getElementById('resultTitle').textContent = myRank===1 ? '🏆 우승!' : `${myRank}위`;
+  document.getElementById('resultTitle').className = 'result-title ' + (myRank===1 ? 'win' : 'lose');
+  document.getElementById('resultStats').innerHTML = sorted.map((p,i) =>
+    `<div class="stat-row">
       <span>${i+1}위 <span style="color:${p.color}">${p.name}</span></span>
       <span>${((p.score/total)*100).toFixed(1)}%</span>
-    </div>
-  `).join('');
-
+    </div>`
+  ).join('');
   showScreen('gameover');
 }
 
 async function leaveRoom() {
   gameRunning = false;
-  clearInterval(gameLoopInterval);
-  clearInterval(timerInterval);
-
+  clearInterval(gameLoopInterval); clearInterval(timerInterval);
   if (roomId && myId) {
     try {
       await remove(ref(db, `rooms/${roomId}/players/${myId}`));
       await remove(ref(db, `rooms/${roomId}/inputs/${myId}`));
     } catch(e) {}
   }
-  roomId = null; myId = null; isHost = false;
+  roomId=null; myId=null; isHost=false;
+  document.body.style.background='var(--bg)';
 }
-
 </script>
 
 <!-- ══════════════ HTML ══════════════ -->
-
 <div id="toast"></div>
 
-<!-- TITLE SCREEN -->
+<!-- TITLE -->
 <div id="screen-title" class="screen">
   <div class="logo">PAPER.IO</div>
   <div class="subtitle">실시간 멀티플레이어</div>
-
-  <div id="config-warning">
-    ⚠️ Firebase 설정이 필요해요!<br>
-    HTML 파일의 <code>firebaseConfig</code> 부분을<br>
-    본인 Firebase 프로젝트 설정으로 교체하세요.<br><br>
-    <strong>방법:</strong> Firebase Console → 프로젝트 설정 → 앱 추가(웹) → 설정 복사
-  </div>
 
   <div class="input-group">
     <label>닉네임</label>
@@ -937,20 +942,26 @@ async function leaveRoom() {
   </div>
 
   <div class="input-group">
-    <label>색상 선택</label>
+    <label>플레이어 색상</label>
     <div class="color-picker" id="colorPicker"></div>
+  </div>
+
+  <div class="input-group">
+    <label>🎨 배경 색상</label>
+    <div class="bg-picker" id="bgPicker"></div>
   </div>
 
   <button class="btn btn-primary" id="btnCreate">🎮 방 만들기</button>
 
   <div class="input-group">
     <label>방 코드로 참가</label>
-    <input type="text" id="roomCode" placeholder="4자리 코드" maxlength="4" style="text-transform:uppercase;letter-spacing:4px;font-size:1.2rem;text-align:center">
+    <input type="text" id="roomCode" placeholder="4자리 코드" maxlength="4"
+      style="text-transform:uppercase;letter-spacing:4px;font-size:1.2rem;text-align:center">
   </div>
   <button class="btn btn-secondary" id="btnJoin">🚪 참가하기</button>
 </div>
 
-<!-- LOBBY SCREEN -->
+<!-- LOBBY -->
 <div id="screen-lobby" class="screen">
   <div class="room-code-display">
     <div class="label">방 코드</div>
@@ -962,11 +973,14 @@ async function leaveRoom() {
   <button class="btn btn-secondary" id="btnLeave">나가기</button>
 </div>
 
-<!-- GAME SCREEN -->
+<!-- GAME -->
 <div id="screen-game" class="screen">
   <div id="hud">
-    <span id="hud-name">Player</span>
-    <span id="hud-score">0%</span>
+    <div id="hud-left">
+      <span id="hud-name">Player</span>
+      <span id="hud-rank" class="hud-rank">1위</span>
+    </div>
+    <span id="hud-score">0.0%</span>
     <span id="hud-time">02:00</span>
   </div>
 
@@ -989,9 +1003,14 @@ async function leaveRoom() {
     <button class="dpad-btn" id="btnDown">▼</button>
     <div class="dpad-empty"></div>
   </div>
+
+  <!-- Countdown overlay -->
+  <div id="countdown">
+    <div id="countdown-num">3</div>
+  </div>
 </div>
 
-<!-- GAME OVER SCREEN -->
+<!-- GAME OVER -->
 <div id="screen-gameover" class="screen">
   <div id="resultTitle" class="result-title win">결과</div>
   <div class="result-stats" id="resultStats"></div>
